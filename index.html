@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#28ad50">
+  <title>Digitaler Unfall-Meldeblock</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="landing" id="home">
+    <section class="cover" aria-label="Digitaler Unfall-Meldeblock und Erste-Hilfe-Informationen">
+      <h1>Digitaler Unfall Meldeblock<br>&amp; Info über die Verwendung von Erste-Hilfe-Material</h1>
+      <div class="medical-kit" aria-hidden="true"><div class="handle"></div><div class="case"><span>+</span></div></div>
+    </section>
+    <button class="start-button" id="open-form">Bitte hier klicken</button>
+    <section class="saved-panel" aria-live="polite">
+      <div><strong id="record-count">0</strong> gespeicherte Meldungen</div>
+      <button class="secondary-button" id="export-home" disabled>Excel-Datei exportieren</button>
+      <p class="storage-note">Meldungen werden automatisch auf diesem Gerät gespeichert.</p>
+    </section>
+  </main>
+
+  <div class="dialog-backdrop" id="dialog" hidden>
+    <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="form-title">
+      <header class="dialog-header">
+        <button class="icon-button" id="close-form" type="button" aria-label="Schließen">×</button>
+        <h2 id="form-title">Bericht zum Erste-Hilfe-Kasten</h2>
+        <button class="icon-button" id="header-export" type="button" aria-label="Gespeicherte Meldungen exportieren" title="Excel-Datei exportieren">⇩</button>
+      </header>
+      <div class="dialog-content">
+        <form id="incident-form">
+          <label class="field"><span>Name des Verletzten</span><input name="injuredName" autocomplete="name"></label>
+          <label class="field required"><span>Datum / Uhrzeit</span><input name="incidentDateTime" type="datetime-local" required></label>
+          <label class="field required"><span>Standort</span><input name="location" required></label>
+          <label class="field required"><span>Abteilung / Bereich</span><input name="department" required></label>
+          <label class="field required"><span>Was wurde dem Verbandskasten entnommen?</span><textarea name="materialsUsed" rows="2" required></textarea></label>
+          <label class="field required"><span>Unfallhergang</span><textarea name="accidentDescription" rows="2" required></textarea></label>
+          <label class="field required"><span>Art und Umfang der Verletzung</span><textarea name="injuryDescription" rows="2" required></textarea></label>
+          <label class="field required"><span>Erste Hilfe Datum/Uhrzeit</span><input name="firstAidDateTime" type="datetime-local" required></label>
+          <label class="field"><span>Name des Erste-Hilfe-Leistenden</span><input name="firstAider"></label>
+          <label class="field"><span>Art und Weise der Maßnahme</span><textarea name="firstAidMeasures" rows="2"></textarea></label>
+          <label class="field"><span>Zeugen des Hergangs bzw. Erste Hilfe Maßnahme</span><textarea name="witnesses" rows="2"></textarea></label>
+          <div class="form-actions">
+            <button class="submit-button" type="submit">EINREICHEN</button>
+            <button class="secondary-button" id="cancel-form" type="button">Abbrechen</button>
+          </div>
+          <p class="form-status" id="form-status" role="status"></p>
+        </form>
+      </div>
+    </section>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

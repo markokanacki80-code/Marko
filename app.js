@@ -1,4 +1,5 @@
 const STORAGE_KEY = 'digitaler-unfall-meldeblock-v1';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzI7-Q4C-9yYlbsj-WLtkk6gJBlXLMKAIIhQDelw6TRLCqqc7x5_SaGkvSeodgeEJs/exec';
 const fieldNames = {
   injuredName: 'Name des Verletzten',
   incidentDateTime: 'Datum / Uhrzeit',
@@ -16,6 +17,7 @@ const fieldNames = {
 const dialog = document.querySelector('#dialog');
 const form = document.querySelector('#incident-form');
 const status = document.querySelector('#form-status');
+const submitButton = form.querySelector('[type="submit"]');
 
 function getRecords() {
   try {
@@ -54,11 +56,11 @@ function excelDate(value) {
 function exportExcel() {
   const records = getRecords();
   if (!records.length) {
-    alert('Es gibt noch keine gespeicherten Meldungen zum Exportieren.');
+    alert('Es gibt noch keine lokal gespeicherten Meldungen zum Exportieren. Für alle Einträge exportiere bitte direkt aus Google Tabellen.');
     return;
   }
   if (!window.XLSX) {
-    alert('Der Excel-Export benötigt eine Internetverbindung. Deine gespeicherten Meldungen bleiben erhalten.');
+    alert('Der Excel-Export benötigt eine Internetverbindung. Deine lokal gespeicherten Meldungen bleiben erhalten.');
     return;
   }
   const rows = records.map((record) => {
@@ -71,8 +73,8 @@ function exportExcel() {
   const sheet = XLSX.utils.json_to_sheet(rows);
   sheet['!cols'] = Object.keys(rows[0]).map((key) => ({ wch: Math.min(42, Math.max(18, key.length + 2)) }));
   const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, sheet, 'Unfallmeldungen');
-  XLSX.writeFile(workbook, `Unfallmeldungen_${new Date().toISOString().slice(0, 10)}.xlsx`);
+  XLSX.utils.book_append_sheet(workbook, sheet, 'Lokale Meldungen');
+  XLSX.writeFile(workbook, `Unfallmeldungen_lokal_${new Date().toISOString().slice(0, 10)}.xlsx`);
 }
 
 document.querySelector('#open-form').addEventListener('click', openForm);
@@ -87,21 +89,45 @@ document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && !dialog.hidden) closeForm();
 });
 
-form.addEventListener('submit', (event) => {
+form.addEventListener('submit', async (event) => {
   event.preventDefault();
   if (!form.reportValidity()) return;
+
   const data = Object.fromEntries(new FormData(form).entries());
-  const records = getRecords();
-  records.push({ ...data, savedAt: new Date().toISOString() });
+  const record = { ...data, savedAt: new Date().toISOString() };
+  const body = new URLSearchParams(record);
+  submitButton.disabled = true;
+  submitButton.textContent = 'SENDING…';
+  status.textContent = 'Meldung wird gesendet…';
+
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
-    refreshCount();
+    // URL-encoded form data is a simple request, avoiding a CORS preflight.
+    // Apps Script's no-cors response is opaque, so the browser cannot verify
+    // whether the script successfully appended the row. Check the Sheet after testing.
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      body
+    });
+
+    const records = getRecords();
+    records.push(record);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+      refreshCount();
+    } catch {
+      // A local backup failure must not discard the request already sent to Apps Script.
+    }
+
     form.reset();
-    status.textContent = 'Bericht gespeichert. Die Daten bleiben auf diesem Gerät erhalten.';
+    status.textContent = 'Anfrage gesendet. Bitte prüfe die Google-Tabelle, ob der Eintrag angekommen ist.';
     document.querySelector('.dialog-content').scrollTo({ top: 0, behavior: 'smooth' });
-    window.setTimeout(closeForm, 1600);
+    window.setTimeout(closeForm, 3000);
   } catch {
-    status.textContent = 'Speichern ist fehlgeschlagen. Der lokale Speicher ist möglicherweise voll.';
+    status.textContent = 'Senden fehlgeschlagen. Prüfe deine Internetverbindung und die Apps-Script-Bereitstellung.';
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = 'EINREICHEN';
   }
 });
 

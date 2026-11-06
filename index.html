@@ -19,9 +19,9 @@
     </section>
     <button class="start-button" id="open-form">Bitte hier klicken</button>
     <section class="saved-panel" aria-live="polite">
-      <div><strong id="record-count">0</strong> gespeicherte Meldungen</div>
-      <button class="secondary-button" id="export-home" disabled>Excel-Datei exportieren</button>
-      <p class="storage-note">Meldungen werden automatisch auf diesem Gerät gespeichert.</p>
+      <div><strong id="record-count">0</strong> lokale Meldungen auf diesem Gerät</div>
+      <button class="secondary-button" id="export-home" disabled>Lokale Excel-Kopie exportieren</button>
+      <p class="storage-note">Neue Meldungen werden an die verbundene Google-Tabelle gesendet. Der Zähler und Excel-Export betreffen nur die lokale Kopie dieses Browsers.</p>
     </section>
   </main>
 
@@ -30,7 +30,7 @@
       <header class="dialog-header">
         <button class="icon-button" id="close-form" type="button" aria-label="Schließen">×</button>
         <h2 id="form-title">Bericht zum Erste-Hilfe-Kasten</h2>
-        <button class="icon-button" id="header-export" type="button" aria-label="Gespeicherte Meldungen exportieren" title="Excel-Datei exportieren">⇩</button>
+        <button class="icon-button" id="header-export" type="button" aria-label="Lokale Meldungen exportieren" title="Lokale Excel-Kopie exportieren">⇩</button>
       </header>
       <div class="dialog-content">
         <form id="incident-form">
@@ -55,6 +55,6 @@
     </section>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=google-sheets-test"></script>
 </body>
 </html>

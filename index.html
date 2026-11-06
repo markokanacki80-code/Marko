@@ -20,7 +20,7 @@
     <button class="start-button" id="open-form">Bitte hier klicken</button>
     <section class="saved-panel" aria-live="polite">
       <div><strong>Gemeinsame Ablage</strong><br>Neue Meldungen werden an Google Sheets gesendet.</div>
-      <p class="storage-note">Nach dem Absenden wird eine E-Mail-Benachrichtigung durch Apps Script ausgelöst. Verwende nur Testdaten, bis der Zugriff und Umgang mit sensiblen Daten geprüft sind.</p>
+      <p class="storage-note">Nach dem Absenden wird eine Bestätigung an die angegebene E-Mail-Adresse gesendet. Verwende nur Testdaten, bis Zugriff und Datenschutz geprüft sind.</p>
     </section>
   </main>
 
@@ -33,6 +33,7 @@
       </header>
       <div class="dialog-content">
         <form id="incident-form">
+          <label class="field required"><span>E-Mail-Adresse des Einreichenden</span><input name="submitterEmail" type="email" autocomplete="email" required></label>
           <label class="field"><span>Name des Verletzten</span><input name="injuredName" autocomplete="name"></label>
           <label class="field required"><span>Datum / Uhrzeit</span><input name="incidentDateTime" type="datetime-local" required></label>
           <label class="field required"><span>Standort</span><input name="location" required></label>
@@ -54,6 +55,6 @@
     </section>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="app.js?v=sheets-email-only"></script>
+  <script src="app.js?v=submitter-email"></script>
 </body>
 </html>

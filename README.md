@@ -1,13 +1,9 @@
 # Digitaler Unfall-Meldeblock
 
-Responsive web application for documenting first-aid kit use and workplace incidents.
+Static HTML/CSS/JavaScript form hosted on GitHub Pages. Form submissions are sent to the configured Google Apps Script endpoint; this browser app does not keep a local submission database or generate an Excel export. The Apps Script endpoint must append each submission to the Google Sheet and send the email notification.
 
-## Start
+## Important setup
 
-Open `index.html` in a modern browser. No build step is required.
+The front end sends URL-encoded fields to the Apps Script `doPost(e)` handler. Configure that script to write the fields to the intended spreadsheet and send a notification email. Deploy the updated Apps Script as a web app and make sure the existing `/exec` URL points to the latest deployment. The browser uses `no-cors`, so it cannot verify whether the script saved the row or sent the email; test with non-sensitive data and check both the Sheet and inbox.
 
-## Data and Excel export
-
-Submitted reports are saved in the browser's local storage on the current device and remain there after closing or refreshing the page. Use **Excel-Datei exportieren** to download all saved reports as an `.xlsx` workbook. The Excel export uses SheetJS from a CDN, so an internet connection is needed for exporting. The reports themselves are stored locally and do not require a connection.
-
-Local browser storage is specific to the browser and device. It is not a shared database or a backup; clearing browser data or changing devices will not carry reports over. Export the workbook regularly and store it safely.
+Do not use a public, unauthenticated endpoint for real injury or employee data without authorization and appropriate access controls. GitHub Pages is public hosting and the form endpoint URL is visible in the app.

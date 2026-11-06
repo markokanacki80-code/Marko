@@ -14,8 +14,8 @@ form.addEventListener('submit', async (event) => {
   status.textContent = 'Meldung wird gesendet…';
 
   try {
-    // Apps Script must append the report and send a confirmation email to submitterEmail.
-    // no-cors avoids a browser preflight; the response is opaque, so server success cannot be verified here.
+    // Apps Script writes the report and sends a confirmation only when an email was supplied.
+    // no-cors responses are opaque, so the browser cannot verify server-side success.
     await fetch(SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
@@ -23,13 +23,13 @@ form.addEventListener('submit', async (event) => {
     });
 
     form.reset();
-    status.textContent = 'Anfrage gesendet. Bitte prüfe Google Sheet und Posteingang auf die Bestätigung.';
+    status.textContent = 'Anfrage gesendet. Bitte prüfe Google Sheet; falls eine E-Mail-Adresse angegeben wurde, prüfe auch den Posteingang.';
     document.querySelector('.dialog-content').scrollTo({ top: 0, behavior: 'smooth' });
     window.setTimeout(() => {
       document.querySelector('#dialog').hidden = true;
       document.body.classList.remove('dialog-open');
       status.textContent = '';
-    }, 3500);
+    }, 4000);
   } catch {
     status.textContent = 'Senden fehlgeschlagen. Prüfe Internetverbindung und Apps-Script-Bereitstellung.';
   } finally {
